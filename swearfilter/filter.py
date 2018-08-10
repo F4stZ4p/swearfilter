@@ -31,7 +31,7 @@ class Message:
 class Filter:
     __slots__ = ['msg', 'reg_samples', '_tmp', '_blacklist', '_whitelist', '_other', 'priority_temp']
 
-    def __init__(self, messsage: str):
+    def __init__(self, messsage: str, *, tempfile=None):
         """
         Scanning message for words.
 
@@ -59,17 +59,18 @@ class Filter:
         def mkway(x: str):
             return path.join(location, x)
 
-        try:
-            self._tmp = path.join(environ['TEMP'], '.~swfilter_temp~')  # Windows
-        except KeyError:  # dividing by OS
-            self._tmp = '/tmp/.~swfilter_temp~'
+        if tempfile:
+            self._tmp = tempfile
+        else:
+            try:
+                self._tmp = path.join(environ['TEMP'], '.~swfilter_temp~')  # Windows
+            except KeyError:  # dividing by OS
+                self._tmp = '/tmp/.~swfilter_temp~'
 
         # Configuration variables
         self._blacklist = Config(mkway('blacklist.txt')).get()['words']
         self._whitelist = Config(mkway('whitelist.txt')).get()['whitelist']
         self._other = Config(mkway('other.txt')).get()
-
-        # info variables
 
     def scan(self):
         """
