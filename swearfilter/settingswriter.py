@@ -1,6 +1,10 @@
 # coding: utf-8
 
-import json
+
+try:
+    import ujson as json
+except ModuleNotFoundError:
+    import json
 
 
 class Config:
